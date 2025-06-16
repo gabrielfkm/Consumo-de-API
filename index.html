@@ -5,15 +5,29 @@
   <title>Buscar Endereço por CEP</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      margin: 40px;
+        display: flex;
+        justify-content: center;    
+        font-family: Arial, sans-serif;         
     }
 
     label, input, button {
       display: block;
       margin-bottom: 10px;
     }
+    label {
+        color: #00df82;
+    }
 
+    #card {
+        max-width: 800px;
+        max-width: 600px;
+        padding: 40px;
+        border-radius: 20px;
+        background-color: #030f0f;
+    }
+    h1 {
+        color: #00df82;
+    }
     #endereco {
       margin-top: 20px;
       padding: 10px;
@@ -24,52 +38,55 @@
   </style>
 </head>
 <body>
+    <main>
+        <div id="card">
+            <h1>Consulta de Endereço via CEP</h1>
 
-  <h1>Consulta de Endereço via CEP</h1>
+            <label for="cep">Digite o CEP:</label>
+            <input type="text" id="cep" placeholder="Ex: 01001000" maxlength="8">
+            <button onclick="buscarEndereco()">Buscar</button>
 
-  <label for="cep">Digite o CEP:</label>
-  <input type="text" id="cep" placeholder="Ex: 01001000" maxlength="8">
-  <button onclick="buscarEndereco()">Buscar</button>
+            <div id="endereco"></div>
+        </div>
+    </main>
 
-  <div id="endereco"></div>
+    <script>
+        function buscarEndereco() {
+        const cep = document.getElementById('cep').value.trim();
 
-  <script>
-    function buscarEndereco() {
-      const cep = document.getElementById('cep').value.trim();
+        if (!cep.match(/^[0-9]{8}$/)) {
+            alert('CEP inválido. Digite apenas 8 números.');
+            return;
+        }
 
-      if (!cep.match(/^[0-9]{8}$/)) {
-        alert('CEP inválido. Digite apenas 8 números.');
-        return;
-      }
+        const url = `https://viacep.com.br/ws/${cep}/json/`;
 
-      const url = `https://viacep.com.br/ws/${cep}/json/`;
-
-      fetch(url)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Erro na requisição');
-          }
-          return response.json();
-        })
-        .then(data => {
-          if (data.erro) {
-            document.getElementById('endereco').innerHTML = 'CEP não encontrado.';
-          } else {
-            document.getElementById('endereco').innerHTML = `
-              <strong>Endereço encontrado:</strong><br>
-              Logradouro: ${data.logradouro}<br>
-              Bairro: ${data.bairro}<br>
-              Cidade: ${data.localidade}<br>
-              Estado: ${data.uf}
-            `;
-          }
-        })
-        .catch(error => {
-          document.getElementById('endereco').innerHTML = 'Erro ao buscar o endereço.';
-          console.error(error);
-        });
-    }
-  </script>
+        fetch(url)
+            .then(response => {
+            if (!response.ok) {
+                throw new Error('Erro na requisição');
+            }
+            return response.json();
+            })
+            .then(data => {
+            if (data.erro) {
+                document.getElementById('endereco').innerHTML = 'CEP não encontrado.';
+            } else {
+                document.getElementById('endereco').innerHTML = `
+                <strong>Endereço encontrado:</strong><br>
+                Logradouro: ${data.logradouro}<br>
+                Bairro: ${data.bairro}<br>
+                Cidade: ${data.localidade}<br>
+                Estado: ${data.uf}
+                `;
+            }
+            })
+            .catch(error => {
+            document.getElementById('endereco').innerHTML = 'Erro ao buscar o endereço.';
+            console.error(error);
+            });
+        }
+    </script>
 
 </body>
 </html>
