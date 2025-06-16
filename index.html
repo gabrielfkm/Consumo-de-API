@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Buscar Endereço por CEP</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+    }
+
+    label, input, button {
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    #endereco {
+      margin-top: 20px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      background-color: #f9f9f9;
+      width: 300px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Consulta de Endereço via CEP</h1>
+
+  <label for="cep">Digite o CEP:</label>
+  <input type="text" id="cep" placeholder="Ex: 01001000" maxlength="8">
+  <button onclick="buscarEndereco()">Buscar</button>
+
+  <div id="endereco"></div>
+
+  <script>
+    function buscarEndereco() {
+      const cep = document.getElementById('cep').value.trim();
+
+      if (!cep.match(/^[0-9]{8}$/)) {
+        alert('CEP inválido. Digite apenas 8 números.');
+        return;
+      }
+
+      const url = `https://viacep.com.br/ws/${cep}/json/`;
+
+      fetch(url)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Erro na requisição');
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data.erro) {
+            document.getElementById('endereco').innerHTML = 'CEP não encontrado.';
+          } else {
+            document.getElementById('endereco').innerHTML = `
+              <strong>Endereço encontrado:</strong><br>
+              Logradouro: ${data.logradouro}<br>
+              Bairro: ${data.bairro}<br>
+              Cidade: ${data.localidade}<br>
+              Estado: ${data.uf}
+            `;
+          }
+        })
+        .catch(error => {
+          document.getElementById('endereco').innerHTML = 'Erro ao buscar o endereço.';
+          console.error(error);
+        });
+    }
+  </script>
+
+</body>
+</html>
