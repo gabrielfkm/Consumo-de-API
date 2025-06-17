@@ -35,6 +35,9 @@
       background-color: #f9f9f9;
       width: 300px;
     }
+    br {
+        color: #00df82;
+    }
   </style>
 </head>
 <body>
@@ -73,7 +76,9 @@
                 document.getElementById('endereco').innerHTML = 'CEP não encontrado.';
             } else {
                 document.getElementById('endereco').innerHTML = `
-                <strong>Endereço encontrado:</strong><br
+                <strong>Endereço encontrado:</strong><br>
+                Logradouro: ${data.logradouro}<br>
+                Bairro: ${data.bairro}<br>
                 Cidade: ${data.localidade}<br>
                 Estado: ${data.uf}
                 `;
